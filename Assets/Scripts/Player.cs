@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -8,10 +9,20 @@ public class Player : MonoBehaviour
     private Rigidbody rb;
     private Animator animator;
     private bool isGrounded;
+    public int health = 100;
+    public GameController gameController;
+    public HealthBar healthbar;
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-       animator = GetComponent<Animator>();
+        animator = GetComponent<Animator>();
+
+        if (healthbar != null)
+        {
+            healthbar.maxHealth = health;
+            healthbar.currentHealth = health;
+            healthbar.UpdateBar();
+        }
     }
 
     void Update()
@@ -30,7 +41,7 @@ public class Player : MonoBehaviour
         Vector3 newVelocity = new Vector3(movement.x, rb.linearVelocity.y, movement.z);
         rb.linearVelocity = newVelocity;
         bool isMoving = movement.magnitude > 0.1f;
-       animator.SetBool("IsRunning", isMoving);
+        animator.SetBool("IsRunning", isMoving);
     }
 
     private void Rotation()
@@ -51,8 +62,8 @@ public class Player : MonoBehaviour
         {
             animator.SetTrigger("IsJumping");
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-          
-            
+
+
             isGrounded = false;
         }
     }
@@ -60,17 +71,36 @@ public class Player : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-           animator.SetTrigger("Attack");
+            animator.SetTrigger("Attack");
             animator.SetBool("IsRunning", false);
         }
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-       if (collision.gameObject.CompareTag("Ground"))
+        if (collision.gameObject.CompareTag("Ground"))
         {
             isGrounded = true;
-            
+
+        }
+
+        if (collision.gameObject.CompareTag("Enemy"))
+            {
+            health-=10;
+        }
+            if (healthbar != null)
+            {
+                healthbar.currentHealth = health;
+                healthbar.UpdateBar();
+            }
+            if (health <= 0)
+            {
+                gameController.PlayerDefeated();
+            }
+
+
         }
     }
-}
+
+
+
