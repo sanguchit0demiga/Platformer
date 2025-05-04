@@ -1,4 +1,5 @@
 using JetBrains.Annotations;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -12,6 +13,7 @@ public class Player : MonoBehaviour
     public int health = 100;
     public GameController gameController;
     public HealthBar healthbar;
+    public GameObject weapon;
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -22,6 +24,10 @@ public class Player : MonoBehaviour
             healthbar.maxHealth = health;
             healthbar.currentHealth = health;
             healthbar.UpdateBar();
+        }
+        if (weapon != null)
+        {
+            weapon.SetActive(false);
         }
     }
 
@@ -73,6 +79,7 @@ public class Player : MonoBehaviour
         {
             animator.SetTrigger("Attack");
             animator.SetBool("IsRunning", false);
+            StartCoroutine(ActivateWeapon());
         }
     }
 
@@ -85,22 +92,34 @@ public class Player : MonoBehaviour
         }
 
         if (collision.gameObject.CompareTag("Enemy"))
-            {
-            health-=10;
+        {
+            health -= 10;
         }
-            if (healthbar != null)
-            {
-                healthbar.currentHealth = health;
-                healthbar.UpdateBar();
-            }
-            if (health <= 0)
-            {
-                gameController.PlayerDefeated();
-            }
+        if (healthbar != null)
+        {
+            healthbar.currentHealth = health;
+            healthbar.UpdateBar();
+        }
+        if (health <= 0)
+        {
+            gameController.PlayerDefeated();
+        }
 
 
+    }
+
+    private IEnumerator ActivateWeapon()
+    {
+        if (weapon != null)
+        {
+            Debug.Log("Activando arma");
+            weapon.SetActive(true);
+            yield return new WaitForSeconds(2f);
+            weapon.SetActive(false);
+            Debug.Log("Desactivando arma");
         }
     }
+}
 
 
 
