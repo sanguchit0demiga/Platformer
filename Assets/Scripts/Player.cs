@@ -14,6 +14,8 @@ public class Player : MonoBehaviour
     public GameController gameController;
     public HealthBar healthbar;
     public GameObject weapon;
+    
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -41,6 +43,7 @@ public class Player : MonoBehaviour
 
     private void Movement()
     {
+        
         float horizontal = Input.GetAxisRaw("Horizontal");
         float vertical = Input.GetAxisRaw("Vertical");
         Vector3 movement = new Vector3(horizontal, 0, vertical).normalized * speed;
@@ -64,6 +67,7 @@ public class Player : MonoBehaviour
     }
     private void Jump()
     {
+        ;
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
             animator.SetTrigger("IsJumping");
@@ -75,12 +79,16 @@ public class Player : MonoBehaviour
     }
     private void Attack()
     {
+     
+
+      
         if (Input.GetMouseButtonDown(0))
         {
             animator.SetTrigger("Attack");
             animator.SetBool("IsRunning", false);
             StartCoroutine(ActivateWeapon());
         }
+      
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -117,8 +125,11 @@ public class Player : MonoBehaviour
             yield return new WaitForSeconds(2f);
             weapon.SetActive(false);
             Debug.Log("Desactivando arma");
+           
         }
+        
     }
+    
 }
 
 
