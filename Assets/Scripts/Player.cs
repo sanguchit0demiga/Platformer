@@ -1,4 +1,4 @@
-using JetBrains.Annotations;
+
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -14,6 +14,7 @@ public class Player : MonoBehaviour
     public GameController gameController;
     public HealthBar healthbar;
     public GameObject weapon;
+    private bool isAttacking;
     
 
     void Start()
@@ -101,7 +102,19 @@ public class Player : MonoBehaviour
 
         if (collision.gameObject.CompareTag("Enemy"))
         {
-            health -= 10;
+            health -= 25;
+        }
+        if (collision.gameObject.CompareTag("Heart"))
+        {
+            health += 25;
+
+
+            if (health > 100)
+            {
+                health = 100;
+            }
+
+            Destroy(collision.gameObject);
         }
         if (healthbar != null)
         {
@@ -113,19 +126,19 @@ public class Player : MonoBehaviour
             gameController.PlayerDefeated();
         }
 
-
+        
     }
-
     private IEnumerator ActivateWeapon()
     {
         if (weapon != null)
         {
-            Debug.Log("Activando arma");
+            isAttacking = true;
             weapon.SetActive(true);
             yield return new WaitForSeconds(2f);
             weapon.SetActive(false);
-            Debug.Log("Desactivando arma");
-           
+            isAttacking = false;
+
+
         }
         
     }

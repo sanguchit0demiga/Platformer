@@ -7,9 +7,17 @@ public class Enemy : MonoBehaviour
     public int health;
     public int weaponDamage;
     public Animator animator;
-    void Start()
+    public Transform target;
+    public bool isAttacking;
+    public float attackDistance = 4f;
+    public float attackCooldown = 3f;
+    private float lastAttackTime = 0f;
+    void Update()
     {
-
+        if (target != null)
+        {
+            EnemyBehaviour();
+        }
     }
     private IEnumerator HitVisualEffect()
     {
@@ -48,5 +56,32 @@ public class Enemy : MonoBehaviour
                 }
             }
         }
+    }
+    public void EnemyBehaviour()
+    {
+        if (Vector3.Distance(transform.position, target.position) <= attackDistance && !isAttacking)
+        {
+            if (Time.time - lastAttackTime > attackCooldown)
+            {
+                StartCoroutine(Attack());
+                lastAttackTime = Time.time;
+            }
+        }
+        else if (Vector3.Distance(transform.position, target.position) > attackDistance && isAttacking)
+        {
+          
+            animator.SetBool("IsAttacking", false);
+        }
+    }
+
+    private IEnumerator Attack()
+    {
+        isAttacking = true;
+        animator.SetBool("IsAttacking", true);
+
+        yield return new WaitForSeconds(1.2f);
+
+        isAttacking = false;
+        animator.SetBool("IsAttacking", false);
     }
 }
