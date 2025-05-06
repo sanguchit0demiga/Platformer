@@ -15,7 +15,7 @@ public class Player : MonoBehaviour
     public HealthBar healthbar;
     public GameObject weapon;
     private bool isAttacking;
-    
+
 
     void Start()
     {
@@ -44,7 +44,7 @@ public class Player : MonoBehaviour
 
     private void Movement()
     {
-        
+
         float horizontal = Input.GetAxisRaw("Horizontal");
         float vertical = Input.GetAxisRaw("Vertical");
         Vector3 movement = new Vector3(horizontal, 0, vertical).normalized * speed;
@@ -80,16 +80,16 @@ public class Player : MonoBehaviour
     }
     private void Attack()
     {
-     
 
-      
+
+
         if (Input.GetMouseButtonDown(0))
         {
             animator.SetTrigger("Attack");
             animator.SetBool("IsRunning", false);
             StartCoroutine(ActivateWeapon());
         }
-      
+
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -126,7 +126,7 @@ public class Player : MonoBehaviour
             gameController.PlayerDefeated();
         }
 
-        
+
     }
     private IEnumerator ActivateWeapon()
     {
@@ -140,9 +140,21 @@ public class Player : MonoBehaviour
 
 
         }
-        
+
     }
-    
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Start"))
+        {
+            Debug.Log("Colisión con Start detectada desde el jugador.");
+            Destroy(other.gameObject);
+            if (gameController != null)
+            {
+                gameController.StartCountdown();
+            }
+
+        }
+    }
 }
 
 
