@@ -9,10 +9,14 @@ public class GameController : MonoBehaviour
     public Text timeReamainingText;
     public GameObject finalPanel;
     private bool countdownStarted = false;
+    
 
     void Start()
     {
         finalPanel.SetActive(false);
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+
     }
 
     void Update()
@@ -41,8 +45,20 @@ public class GameController : MonoBehaviour
 
         finalPanel.SetActive(true);
     }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("Start"))
+        {
+            
+            Destroy(other.gameObject);
 
-public void PlayerDefeated()
+          
+           
+            StartCountdown();  
+        }
+    }
+
+    public void PlayerDefeated()
     {
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
