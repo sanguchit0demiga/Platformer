@@ -12,6 +12,22 @@ public class Enemy : MonoBehaviour
     public float attackDistance = 4f;
     public float attackCooldown = 3f;
     private float lastAttackTime = 0f;
+    private Vector3 initialPosition;
+    private Quaternion initialRotation;
+    private int initialHealth;
+    private Color originalColor;
+
+    void Start()
+    {
+        Renderer renderer = GetComponentInChildren<Renderer>();
+        if (renderer != null)
+        {
+            originalColor = renderer.material.color;
+        }
+        initialPosition = transform.position;
+        initialRotation = transform.rotation;
+        initialHealth = health;
+    }
     void Update()
     {
         if (target != null)
@@ -22,20 +38,18 @@ public class Enemy : MonoBehaviour
     private IEnumerator HitVisualEffect()
     {
         Renderer renderer = GetComponentInChildren<Renderer>();
+        if (renderer == null) yield break;
+
         Material mat = renderer.material;
 
         Vector3 originalScale = transform.localScale;
-        Color originalColor = mat.color;
-
 
         transform.localScale = originalScale * 0.9f;
         mat.color = Color.red;
         yield return new WaitForSeconds(0.05f);
 
-
         transform.localScale = originalScale * 1.3f;
         yield return new WaitForSeconds(0.10f);
-
 
         transform.localScale = originalScale;
         mat.color = originalColor;
@@ -52,7 +66,7 @@ public class Enemy : MonoBehaviour
 
                 if (health <= 0)
                 {
-                    Destroy(gameObject);
+                    gameObject.SetActive(false);
                 }
             }
         }
@@ -72,6 +86,14 @@ public class Enemy : MonoBehaviour
           
             animator.SetBool("IsAttacking", false);
         }
+        Vector3 direction = (target.position - transform.position).normalized;
+        direction.y = 0; 
+
+        if (direction != Vector3.zero)
+        {
+            Quaternion lookRotation = Quaternion.LookRotation(direction);
+            transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 5f);
+        }
     }
 
     private IEnumerator Attack()
@@ -83,5 +105,23 @@ public class Enemy : MonoBehaviour
 
         isAttacking = false;
         animator.SetBool("IsAttacking", false);
+    }
+    public void ResetEnemy()
+    {
+        transform.position = initialPosition;
+        transform.rotation = initialRotation;
+        health = initialHealth;
+        gameObject.SetActive(true);
+
+        if (animator != null)
+        {
+            animator.SetBool("IsAttacking", false);
+        }
+        Renderer renderer = GetComponentInChildren<Renderer>();
+        if (renderer != null)
+        {
+            Material mat = renderer.material;
+            mat.color = Color.white; 
+        }
     }
 }

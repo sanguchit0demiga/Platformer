@@ -16,6 +16,7 @@ public class Player : MonoBehaviour
     public GameObject weapon;
     private bool isAttacking;
     private Vector3 respawnPoint;
+    public GameObject winPanel;
 
 
 
@@ -151,19 +152,27 @@ public class Player : MonoBehaviour
         {
             Debug.Log("Zona de muerte tocada.");
             Die();
-        } 
+        }
         if (other.CompareTag("Start"))
         {
             Debug.Log("Colisi�n con Start detectada desde el jugador.");
             Destroy(other.gameObject);
+
             if (gameController != null)
             {
                 gameController.StartCountdown();
             }
-
+        }
+        if (other.CompareTag("Win"))
+        {
+            Destroy(other.gameObject);
+            if (gameController != null)
+            {
+                gameController.ShowWinPanel();
+            }
         }
     }
-    public void UpdateCheckpoint(Vector3 newCheckpoint)
+        public void UpdateCheckpoint(Vector3 newCheckpoint)
     {
         respawnPoint = newCheckpoint;
     }

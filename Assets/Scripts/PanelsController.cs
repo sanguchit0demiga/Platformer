@@ -4,6 +4,13 @@ using UnityEngine.SceneManagement;
 
 public class PanelsController: MonoBehaviour
 {
+
+    void Start()
+    {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+    }
+
     public void TryAgain()
     {
         SceneManager.LoadScene("Game"); 

@@ -4,21 +4,26 @@ using UnityEngine.UI;
 public class GameController : MonoBehaviour
 {
 
-    public float initialTime = 90f;
+    public float initialTime = 120f;
     private float timeRemaining;
     public Text timeReamainingText;
-    public GameObject finalPanel;
+    public GameObject losePanel;
     private bool countdownStarted = false;
     public int starsCollected = 0;
     public ScoreManager scoreManager;
     public GameObject[] stars;
     public GameObject[] hearts;
+    public Text finalScoreText;
+    public GameObject winPanel;
+    public GameObject[] enemies;
 
     void Start()
     {
         stars = GameObject.FindGameObjectsWithTag("Star");
         hearts = GameObject.FindGameObjectsWithTag("Heart");
-        finalPanel.SetActive(false);
+        enemies = GameObject.FindGameObjectsWithTag("Enemy");
+        
+        
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
@@ -35,7 +40,11 @@ public class GameController : MonoBehaviour
         }
         else if (countdownStarted && timeRemaining <= 0)
         {
-            ShowFinalPanel();
+           
+            timeRemaining = 0;
+            Debug.Log("Tiempo agotado, activando el panel de derrota.");
+            ShowLosePanel();
+            countdownStarted = false;
         }
     }
 
@@ -45,11 +54,8 @@ public class GameController : MonoBehaviour
         timeRemaining = initialTime;
     }
 
-    private void ShowFinalPanel()
-    {
-
-        finalPanel.SetActive(true);
-    }
+  
+    
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Start"))
@@ -67,9 +73,9 @@ public class GameController : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        if (finalPanel != null)
+        if (losePanel != null)
         {
-            finalPanel.SetActive(true);
+            losePanel.SetActive(true);
         }
     }
     public float GetTimeRemaining()
@@ -99,6 +105,48 @@ public class GameController : MonoBehaviour
             {
                 hearts[i].SetActive(true);
             }
+        }
+        for (int i = 0; i < enemies.Length; i++)
+        {
+            if (enemies[i] != null)
+            {
+                Enemy enemyScript = enemies[i].GetComponent<Enemy>();
+                if (enemyScript != null)
+                {
+                    enemyScript.ResetEnemy();
+                }
+                else
+                {
+                    enemies[i].SetActive(true);
+                }
+            }
+        }
+    }
+        public void ShowWinPanel()
+    {
+       Cursor.lockState= CursorLockMode.None;
+        Cursor.visible = true;
+
+        if (winPanel != null)
+        {
+            winPanel.SetActive(true);
+        }
+        if (finalScoreText != null)
+        {
+            finalScoreText.text = "Final score: " + starsCollected.ToString();
+           
+        }
+    }
+    public void ShowLosePanel()
+    {
+        
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+
+        if (losePanel != null)
+        {
+            losePanel.SetActive(true);
         }
     }
 }

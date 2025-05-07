@@ -12,15 +12,24 @@ public class Star : MonoBehaviour
         scoreManager = FindObjectOfType<ScoreManager>();
     }
 
-   
+
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player") && scoreManager != null)
         {
-            FindObjectOfType<ScoreManager>().score += 1;
+
+            scoreManager.score += value;
+
+
+            GameController gameController = FindObjectOfType<GameController>();
+            if (gameController != null)
+            {
+                gameController.starsCollected++;
+            }
+
+
             gameObject.SetActive(false);
         }
-       
-        }
     }
+}
