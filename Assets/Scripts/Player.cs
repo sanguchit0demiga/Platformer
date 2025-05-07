@@ -151,7 +151,7 @@ public class Player : MonoBehaviour
         {
             Debug.Log("Zona de muerte tocada.");
             Die();
-        }
+        } 
         if (other.CompareTag("Start"))
         {
             Debug.Log("Colisi�n con Start detectada desde el jugador.");
