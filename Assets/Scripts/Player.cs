@@ -15,12 +15,15 @@ public class Player : MonoBehaviour
     public HealthBar healthbar;
     public GameObject weapon;
     private bool isAttacking;
+    private Vector3 respawnPoint;
+
 
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
+        respawnPoint = transform.position;
 
         if (healthbar != null)
         {
@@ -114,7 +117,7 @@ public class Player : MonoBehaviour
                 health = 100;
             }
 
-            Destroy(collision.gameObject);
+            collision.gameObject.SetActive(false);
         }
         if (healthbar != null)
         {
@@ -123,7 +126,7 @@ public class Player : MonoBehaviour
         }
         if (health <= 0)
         {
-            gameController.PlayerDefeated();
+            Die();
         }
 
 
@@ -144,9 +147,14 @@ public class Player : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
+        if (other.CompareTag("Die"))
+        {
+            Debug.Log("Zona de muerte tocada.");
+            Die();
+        }
         if (other.CompareTag("Start"))
         {
-            Debug.Log("Colisión con Start detectada desde el jugador.");
+            Debug.Log("Colisiï¿½n con Start detectada desde el jugador.");
             Destroy(other.gameObject);
             if (gameController != null)
             {
@@ -155,6 +163,33 @@ public class Player : MonoBehaviour
 
         }
     }
+    public void UpdateCheckpoint(Vector3 newCheckpoint)
+    {
+        respawnPoint = newCheckpoint;
+    }
+    private void Die()
+    {
+        if (gameController != null && gameController.GetTimeRemaining() > 0f)
+        {
+          
+            transform.position = respawnPoint;
+            rb.linearVelocity = Vector3.zero;
+            health = 100;
+
+            if (healthbar != null)
+            {
+                healthbar.currentHealth = health;
+                healthbar.UpdateBar();
+            }
+            gameController.ResetCollectibles();
+        }
+        else
+        {
+            
+            gameController.PlayerDefeated();
+        }
+    }
+
 }
 
 

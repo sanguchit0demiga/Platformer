@@ -18,8 +18,8 @@ public class Star : MonoBehaviour
     {
         if (other.CompareTag("Player") && scoreManager != null)
         {
-            scoreManager.score += value;
-            Destroy(gameObject);
+            FindObjectOfType<ScoreManager>().score += 1;
+            gameObject.SetActive(false);
         }
        
         }

@@ -5,7 +5,7 @@ public class MenuController : MonoBehaviour
 {
     void Start()
     {
-        
+
     }
 
     public void PlayGame()
@@ -13,9 +13,9 @@ public class MenuController : MonoBehaviour
         UnityEngine.SceneManagement.SceneManager.LoadScene("Game");
 
     }
-public void ExitGame()
-{
-    Application.Quit();
-    
-}
+    public void ExitGame()
+    {
+        Application.Quit();
+
+    }
 }

@@ -7,6 +7,7 @@ public class ScoreManager : MonoBehaviour
     public Text scoreText;
 
 
+
     private void Update()
     {
         scoreText.text = "X " + score.ToString();

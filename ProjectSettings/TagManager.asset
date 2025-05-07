@@ -9,6 +9,9 @@ TagManager:
   - WeaponImpact
   - Heart
   - Start
+  - Checkpoint
+  - Star
+  - Die
   layers:
   - Default
   - TransparentFX
